@@ -1,7 +1,6 @@
 # Forkify Project
 
-👉 Ii's is a training project.
-👉 It's final project of JS course.
+👉 Ii's is a training project. It's final project of JS course.
 
 ⚠ It is not responsive.
 
