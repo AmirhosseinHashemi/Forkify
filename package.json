@@ -1,11 +1,19 @@
 {
   "name": "forkify",
   "version": "1.0.0",
-  "description": "  ",
+  "description": "",
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build index.html"
   },
   "author": "amirhossein hashemi",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.10.3",
+    "parcel": "^2.10.3"
+  },
+  "dependencies": {
+    "core-js": "^3.33.3",
+    "regenerator-runtime": "^0.14.0"
+  }
 }
