@@ -587,9 +587,7 @@ const controlRecipes = async function() {
         const id = window.location.hash.slice(1);
         if (!id) return;
         (0, _recipeViewJsDefault.default).renderSpinner();
-        const s = await _modelJs.loadRecipe(id);
-        console.log(s);
-        console.log(_modelJs.state.recipe);
+        await _modelJs.loadRecipe(id);
         (0, _recipeViewJsDefault.default).render(_modelJs.state.recipe);
     } catch (err) {
         console.error(err);
