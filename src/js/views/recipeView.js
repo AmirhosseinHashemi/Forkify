@@ -2,16 +2,18 @@ import icons from 'url:../../img/icons.svg'; // point to icons file in dist fold
 
 class recipeView {
   #parentElement = document.querySelector('.recipe');
+  #errorMessage = 'Recipe not found. Please try another recipe :)';
+  #successMessage = '';
   #data;
 
   render(data) {
     this.#data = data;
     const markup = this.#generateMarkup();
-    this.#clean();
+    this.#clear();
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
-  #clean() {
+  #clear() {
     this.#parentElement.innerHTML = '';
   }
 
@@ -130,7 +132,37 @@ class recipeView {
       </svg>
     </div>
     `;
-    this.#clean();
+    this.#clear();
+    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+
+  renderError(message = this.#errorMessage) {
+    const markup = `
+      <div class="error">
+        <div>
+          <svg>
+            <use href="${icons}#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div> 
+    `;
+    this.#clear();
+    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
+  }
+
+  renderSuccess(message = this.#successMessage) {
+    const markup = `
+      <div class="message">
+        <div>
+          <svg>
+            <use href="${icons}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div> 
+    `;
+    this.#clear();
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 }
