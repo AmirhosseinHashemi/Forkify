@@ -22,6 +22,8 @@ const controlRecipes = async function () {
 // handler submit event when user searchs for recipes
 const controlSearchResault = async function () {
   const query = searchView.getQuery();
+  if (!query) return;
+
   await model.loadSearchResult(query);
   console.log(model.state);
 };
