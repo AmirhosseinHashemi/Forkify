@@ -17,6 +17,7 @@ class recipeView {
     this.#parentElement.innerHTML = '';
   }
 
+  // create html structure of recipe dynamically
   #generateMarkup() {
     return `
         <figure class="recipe__fig">
@@ -103,6 +104,7 @@ class recipeView {
       `;
   }
 
+  // create html structure of ingredients
   #generateIngredientsMarkup(ingredient) {
     return `
     <li class="recipe__ingredient">
@@ -118,12 +120,14 @@ class recipeView {
 `;
   }
 
+  // handle events that should generate recipe
   addHandlerRender(handler) {
     ['load', 'hashchange'].forEach(event =>
       window.addEventListener(event, handler)
     );
   }
 
+  // loading animation
   renderSpinner() {
     const markup = `
     <div class="spinner">
@@ -136,6 +140,7 @@ class recipeView {
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
+  // create html structure of error message
   renderError(message = this.#errorMessage) {
     const markup = `
       <div class="error">
@@ -151,6 +156,7 @@ class recipeView {
     this.#parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
+  // create html structure of success message
   renderSuccess(message = this.#successMessage) {
     const markup = `
       <div class="message">
