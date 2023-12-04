@@ -583,6 +583,8 @@ var _recipeViewJs = require("./views/recipeView.js"); // import recipeView objec
 var _recipeViewJsDefault = parcelHelpers.interopDefault(_recipeViewJs);
 var _searchViewJs = require("./views/searchView.js");
 var _searchViewJsDefault = parcelHelpers.interopDefault(_searchViewJs);
+var _resultViewJs = require("./views/resultView.js");
+var _resultViewJsDefault = parcelHelpers.interopDefault(_resultViewJs);
 // handler recipe that user clicks on
 const controlRecipes = async function() {
     try {
@@ -600,8 +602,9 @@ const controlRecipes = async function() {
 const controlSearchResault = async function() {
     const query = (0, _searchViewJsDefault.default).getQuery();
     if (!query) return;
+    (0, _resultViewJsDefault.default).renderSpinner();
     await _modelJs.loadSearchResult(query);
-    console.log(_modelJs.state);
+    (0, _resultViewJsDefault.default).render(_modelJs.state.search.result);
 };
 const init = function() {
     (0, _recipeViewJsDefault.default).addHandlerRender(controlRecipes);
@@ -609,7 +612,7 @@ const init = function() {
 };
 init();
 
-},{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./model.js":"Y4A21","./views/recipeView.js":"l60JC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/searchView.js":"9OQAM"}],"49tUX":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"49tUX","regenerator-runtime/runtime":"dXNgZ","./model.js":"Y4A21","./views/recipeView.js":"l60JC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/searchView.js":"9OQAM","./views/resultView.js":"f70O5"}],"49tUX":[function(require,module,exports) {
 "use strict";
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
 require("52e9b3eefbbce1ed");
@@ -2806,6 +2809,37 @@ class searchView extends (0, _viewJsDefault.default) {
 }
 exports.default = new searchView();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./view.js":"bWlJ9"}]},["kYpTN","aenu9"], "aenu9", "parcelRequire3a11")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./view.js":"bWlJ9"}],"f70O5":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _iconsSvg = require("url:../../img/icons.svg"); // point to icons file in dist folder
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+var _viewJs = require("./view.js");
+var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
+class ResultView extends (0, _viewJsDefault.default) {
+    _parentElement = document.querySelector(".results");
+    // generate one markup as one recipe
+    _generateMarkup() {
+        return this._data.map((recipe)=>this._generateMarkupItem(recipe)).join("");
+    }
+    _generateMarkupItem(recipe) {
+        return `
+        <li class="preview">
+            <a class="preview__link" href=#${recipe.id}>
+            <figure class="preview__fig">
+                <img src=${recipe.image} alt=${recipe.title} />
+            </figure>
+            <div class="preview__data">
+                <h4 class="preview__title">${recipe.title}</h4>
+                <p class="preview__publisher">${recipe.publisher}</p>
+            </div>
+            </a>
+        </li>
+    `;
+    }
+}
+exports.default = new ResultView();
+
+},{"url:../../img/icons.svg":"loVOp","./view.js":"bWlJ9","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["kYpTN","aenu9"], "aenu9", "parcelRequire3a11")
 
 //# sourceMappingURL=index.e37f48ea.js.map
