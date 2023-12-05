@@ -2,7 +2,7 @@ import icons from 'url:../../img/icons.svg'; // point to icons file in dist fold
 import { Fraction } from 'fractional'; // pakage for display number of ingredient better
 import View from './view.js';
 
-class recipeView extends View {
+class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
   _errorMessage = 'Recipe not found. Please try another recipe :)';
   _successMessage = '';
@@ -122,4 +122,4 @@ class recipeView extends View {
   }
 }
 
-export default new recipeView();
+export default new RecipeView();

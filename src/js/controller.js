@@ -1,8 +1,8 @@
 import 'core-js/stable'; // polyfill ES6 features
 import 'regenerator-runtime/runtime'; // polyfill async/await
 import * as model from './model.js'; // import entire file as a object with model name
-import recipeView from './views/recipeView.js'; // import recipeView object
-import searchView from './views/searchView.js';
+import RecipeView from './views/recipeView.js'; // import recipeView object
+import SearchView from './views/searchView.js';
 import ResultView from './views/resultView.js';
 import PaginationView from './views/paginationView.js';
 
@@ -13,18 +13,18 @@ const controlRecipes = async function () {
     const id = window.location.hash.slice(1);
     if (!id) return;
 
-    recipeView.renderSpinner();
+    RecipeView.renderSpinner();
     await model.loadRecipe(id);
-    recipeView.render(model.state.recipe);
+    RecipeView.render(model.state.recipe);
   } catch (err) {
-    recipeView.renderError();
+    RecipeView.renderError();
   }
 };
 
 // handler submit event when user searchs for recipes
 const controlSearchResault = async function () {
   try {
-    const query = searchView.getQuery();
+    const query = SearchView.getQuery();
     if (!query) return;
 
     ResultView.renderSpinner();
@@ -44,8 +44,8 @@ const controlPagination = function (goTo) {
 
 // add handler to events _ publisher-subscriber pattern
 const init = function () {
-  recipeView.addHandlerRender(controlRecipes);
-  searchView.addHandlerSearch(controlSearchResault);
+  RecipeView.addHandlerRender(controlRecipes);
+  SearchView.addHandlerSearch(controlSearchResault);
   PaginationView.addHandlerPagination(controlPagination);
 };
 init();

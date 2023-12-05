@@ -1,6 +1,6 @@
 import View from './view.js';
 
-class searchView extends View {
+class SearchView extends View {
   #parentElement = document.querySelector('.search');
 
   // receive search input value
@@ -24,4 +24,4 @@ class searchView extends View {
   }
 }
 
-export default new searchView();
+export default new SearchView();

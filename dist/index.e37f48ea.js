@@ -2596,7 +2596,7 @@ var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 var _fractional = require("fractional"); // pakage for display number of ingredient better
 var _viewJs = require("./view.js");
 var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
-class recipeView extends (0, _viewJsDefault.default) {
+class RecipeView extends (0, _viewJsDefault.default) {
     _parentElement = document.querySelector(".recipe");
     _errorMessage = "Recipe not found. Please try another recipe :)";
     _successMessage = "";
@@ -2711,7 +2711,7 @@ class recipeView extends (0, _viewJsDefault.default) {
         ].forEach((event)=>window.addEventListener(event, handler));
     }
 }
-exports.default = new recipeView();
+exports.default = new RecipeView();
 
 },{"url:../../img/icons.svg":"loVOp","fractional":"3SU56","./view.js":"bWlJ9","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"loVOp":[function(require,module,exports) {
 module.exports = require("9bcc84ee5d265e38").getBundleURL("hWUTQ") + "icons.dfd7a6db.svg" + "?" + Date.now();
@@ -3070,7 +3070,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _viewJs = require("./view.js");
 var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
-class searchView extends (0, _viewJsDefault.default) {
+class SearchView extends (0, _viewJsDefault.default) {
     #parentElement = document.querySelector(".search");
     // receive search input value
     getQuery() {
@@ -3090,7 +3090,7 @@ class searchView extends (0, _viewJsDefault.default) {
         this.#parentElement.querySelector(".search__field").value = "";
     }
 }
-exports.default = new searchView();
+exports.default = new SearchView();
 
 },{"./view.js":"bWlJ9","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"f70O5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
