@@ -2506,6 +2506,7 @@ const loadSearchResult = async function(query) {
     try {
         // store query in the state
         state.search.query = query;
+        state.search.page = 1;
         const data = await (0, _helpersJs.getJSON)(`${(0, _configJs.API_URL)}?search=${query}`);
         // store data in the state and destructure data
         state.search.result = data.data.recipes.map((recipe)=>{

@@ -40,7 +40,7 @@ export const loadSearchResult = async function (query) {
   try {
     // store query in the state
     state.search.query = query;
-
+    state.search.page = 1;
     const data = await getJSON(`${API_URL}?search=${query}`);
 
     // store data in the state and destructure data
