@@ -9,6 +9,7 @@ export const state = {
     page: 1,
     resultPerPage: RES_PER_PAGE,
   },
+  bookMarks: [],
 };
 
 // receive recipe that users clicks on them
@@ -28,6 +29,9 @@ export const loadRecipe = async function (id) {
       servings: recipe.servings,
       cookingTime: recipe.cooking_time,
       ingredients: recipe.ingredients,
+
+      // is recipe on book mark list or not
+      bookMark: state.bookMarks.some(marked => marked.id === id),
     };
   } catch (err) {
     // rethrow error for controller
@@ -72,4 +76,15 @@ export const updateServing = function (newServing) {
     ing.quantity = (ing.quantity * newServing) / state.recipe.servings;
   });
   state.recipe.servings = newServing;
+};
+
+export const addBookMark = function (recipe) {
+  state.bookMarks.push(recipe);
+  if (state.recipe.id === recipe.id) state.recipe.bookMark = true;
+};
+
+export const removeBookMark = function (id) {
+  const index = state.bookMarks.findIndex(marked => id === marked.id);
+  state.bookMarks.splice(index, 1);
+  if (state.recipe.id === id) state.recipe.bookMark = false;
 };

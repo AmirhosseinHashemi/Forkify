@@ -625,12 +625,19 @@ const controlServing = function(newServing) {
     _modelJs.updateServing(newServing);
     (0, _recipeViewJsDefault.default).update(_modelJs.state.recipe);
 };
+// handler for add bookmark
+const controlBookMark = function() {
+    if (_modelJs.state.recipe.bookMark) _modelJs.removeBookMark(_modelJs.state.recipe.id);
+    else _modelJs.addBookMark(_modelJs.state.recipe);
+    (0, _recipeViewJsDefault.default).update(_modelJs.state.recipe);
+};
 // add handler to events _ publisher-subscriber pattern
 const init = function() {
     (0, _recipeViewJsDefault.default).addHandlerRender(controlRecipes);
+    (0, _recipeViewJsDefault.default).addHandlerServingUpdate(controlServing);
+    (0, _recipeViewJsDefault.default).addHandlerBookMark(controlBookMark);
     (0, _searchViewJsDefault.default).addHandlerSearch(controlSearchResault);
     (0, _paginationViewJsDefault.default).addHandlerPagination(controlPagination);
-    (0, _recipeViewJsDefault.default).addHandlerServingUpdate(controlServing);
 };
 init();
 
@@ -2471,6 +2478,8 @@ parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 parcelHelpers.export(exports, "loadSearchResult", ()=>loadSearchResult);
 parcelHelpers.export(exports, "getSearchResaultPage", ()=>getSearchResaultPage);
 parcelHelpers.export(exports, "updateServing", ()=>updateServing);
+parcelHelpers.export(exports, "addBookMark", ()=>addBookMark);
+parcelHelpers.export(exports, "removeBookMark", ()=>removeBookMark);
 var _configJs = require("./config.js");
 var _helpersJs = require("./helpers.js");
 const state = {
@@ -2480,7 +2489,8 @@ const state = {
         result: [],
         page: 1,
         resultPerPage: (0, _configJs.RES_PER_PAGE)
-    }
+    },
+    bookMarks: []
 };
 const loadRecipe = async function(id) {
     try {
@@ -2495,7 +2505,9 @@ const loadRecipe = async function(id) {
             image: recipe.image_url,
             servings: recipe.servings,
             cookingTime: recipe.cooking_time,
-            ingredients: recipe.ingredients
+            ingredients: recipe.ingredients,
+            // is recipe on book mark list or not
+            bookMark: state.bookMarks.some((marked)=>marked.id === id)
         };
     } catch (err) {
         // rethrow error for controller
@@ -2533,6 +2545,15 @@ const updateServing = function(newServing) {
         ing.quantity = ing.quantity * newServing / state.recipe.servings;
     });
     state.recipe.servings = newServing;
+};
+const addBookMark = function(recipe) {
+    state.bookMarks.push(recipe);
+    if (state.recipe.id === recipe.id) state.recipe.bookMark = true;
+};
+const removeBookMark = function(id) {
+    const index = state.bookMarks.findIndex((marked)=>id === marked.id);
+    state.bookMarks.splice(index, 1);
+    if (state.recipe.id === id) state.recipe.bookMark = false;
 };
 
 },{"./config.js":"k5Hzs","./helpers.js":"hGI1E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
@@ -2665,9 +2686,9 @@ class RecipeView extends (0, _viewJsDefault.default) {
               <use href="${0, _iconsSvgDefault.default}#icon-user"></use>
             </svg>
           </div>
-          <button class="btn--round">
+          <button class="btn--round btn--bookmark">
             <svg class="">
-              <use href="${0, _iconsSvgDefault.default}#icon-bookmark-fill"></use>
+              <use href="${0, _iconsSvgDefault.default}#icon-bookmark${this._data.bookMark ? "-fill" : ""}"></use>
             </svg>
           </button>
         </div>
@@ -2729,6 +2750,13 @@ class RecipeView extends (0, _viewJsDefault.default) {
             if (!btnClicked) return;
             const servingsNum = +btnClicked.dataset.serving;
             if (servingsNum > 0) handler(servingsNum);
+        });
+    }
+    addHandlerBookMark(handler) {
+        this._parentElement.addEventListener("click", function(e) {
+            const btnClicked = e.target.closest(".btn--bookmark");
+            if (!btnClicked) return;
+            handler();
         });
     }
 }
