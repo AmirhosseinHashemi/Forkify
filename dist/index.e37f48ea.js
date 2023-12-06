@@ -618,11 +618,16 @@ const controlPagination = function(goTo) {
     (0, _resultViewJsDefault.default).render(_modelJs.getSearchResaultPage(goTo));
     (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
 };
+const controlServing = function(newServing) {
+    _modelJs.updateServing(newServing);
+    (0, _recipeViewJsDefault.default).update(_modelJs.state.recipe);
+};
 // add handler to events _ publisher-subscriber pattern
 const init = function() {
     (0, _recipeViewJsDefault.default).addHandlerRender(controlRecipes);
     (0, _searchViewJsDefault.default).addHandlerSearch(controlSearchResault);
     (0, _paginationViewJsDefault.default).addHandlerPagination(controlPagination);
+    (0, _recipeViewJsDefault.default).addHandlerServingUpdate(controlServing);
 };
 init();
 
@@ -2462,6 +2467,7 @@ parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 parcelHelpers.export(exports, "loadSearchResult", ()=>loadSearchResult);
 parcelHelpers.export(exports, "getSearchResaultPage", ()=>getSearchResaultPage);
+parcelHelpers.export(exports, "updateServing", ()=>updateServing);
 var _configJs = require("./config.js");
 var _helpersJs = require("./helpers.js");
 const state = {
@@ -2516,6 +2522,12 @@ const getSearchResaultPage = function(page = state.search.page) {
     const start = (page - 1) * state.search.resultPerPage;
     const end = page * state.search.resultPerPage;
     return state.search.result.slice(start, end);
+};
+const updateServing = function(newServing) {
+    state.recipe.ingredients.forEach((ing)=>{
+        ing.quantity = ing.quantity * newServing / state.recipe.servings;
+    });
+    state.recipe.servings = newServing;
 };
 
 },{"./config.js":"k5Hzs","./helpers.js":"hGI1E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
@@ -2626,18 +2638,16 @@ class RecipeView extends (0, _viewJsDefault.default) {
             <svg class="recipe__info-icon">
               <use href="${0, _iconsSvgDefault.default}#icon-users"></use>
             </svg>
-            <span class="recipe__info-data recipe__info-data--people">
-                ${this._data.servings}
-            </span>
+            <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>
             <span class="recipe__info-text">servings</span>
   
             <div class="recipe__info-buttons">
-              <button class="btn--tiny btn--increase-servings">
+              <button data-serving=${this._data.servings - 1} class="btn--tiny btn--update-servings">
                 <svg>
                   <use href="${0, _iconsSvgDefault.default}#icon-minus-circle"></use>
                 </svg>
               </button>
-              <button class="btn--tiny btn--increase-servings">
+              <button data-serving=${this._data.servings + 1} class="btn--tiny btn--update-servings">
                 <svg>
                   <use href="${0, _iconsSvgDefault.default}#icon-plus-circle"></use>
                 </svg>
@@ -2691,9 +2701,7 @@ class RecipeView extends (0, _viewJsDefault.default) {
       <svg class="recipe__icon">
         <use href="${0, _iconsSvgDefault.default}#icon-check"></use>
       </svg>
-      <div class="recipe__quantity">
-      ${ingredient.unit ? new (0, _fractional.Fraction)(ingredient.quantity).toString() : ""}
-      </div>
+      <div class="recipe__quantity">${ingredient.unit ? new (0, _fractional.Fraction)(ingredient.quantity).toString() : ""}</div>
       <div class="recipe__description">
         <span class="recipe__unit">
           ${ingredient.unit}
@@ -2709,6 +2717,14 @@ class RecipeView extends (0, _viewJsDefault.default) {
             "load",
             "hashchange"
         ].forEach((event)=>window.addEventListener(event, handler));
+    }
+    addHandlerServingUpdate(handler) {
+        this._parentElement.addEventListener("click", function(e) {
+            const btnClicked = e.target.closest(".btn--update-servings");
+            if (!btnClicked) return;
+            const servingsNum = +btnClicked.dataset.serving;
+            if (servingsNum > 0) handler(servingsNum);
+        });
     }
 }
 exports.default = new RecipeView();
@@ -3016,6 +3032,21 @@ class View {
         const markup = this._generateMarkup();
         this._clear();
         this._parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    update(data) {
+        this._data = data;
+        const newMarkup = this._generateMarkup();
+        // create new vitual DOM
+        const newDOM = document.createRange().createContextualFragment(newMarkup);
+        const newElements = newDOM.querySelectorAll("*");
+        // current actual DOM
+        const currElements = this._parentElement.querySelectorAll("*");
+        newElements.forEach((item, i)=>{
+            if (!item.isEqualNode(currElements[i]) && item.firstChild?.nodeValue.trim() !== "") currElements[i].textContent = item.textContent;
+            if (!item.isEqualNode(currElements[i])) Array.from(item.attributes).forEach((att)=>{
+                currElements[i].setAttribute(att.name, att.value);
+            });
+        });
     }
     _clear() {
         this._parentElement.innerHTML = "";
