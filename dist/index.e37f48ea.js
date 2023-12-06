@@ -593,6 +593,8 @@ const controlRecipes = async function() {
         // receive id(#hash) from url
         const id = window.location.hash.slice(1);
         if (!id) return;
+        // mark active recipe
+        (0, _resultViewJsDefault.default).update(_modelJs.getSearchResaultPage());
         (0, _recipeViewJsDefault.default).renderSpinner();
         await _modelJs.loadRecipe(id);
         (0, _recipeViewJsDefault.default).render(_modelJs.state.recipe);
@@ -618,6 +620,7 @@ const controlPagination = function(goTo) {
     (0, _resultViewJsDefault.default).render(_modelJs.getSearchResaultPage(goTo));
     (0, _paginationViewJsDefault.default).render(_modelJs.state.search);
 };
+// handler for change servings number
 const controlServing = function(newServing) {
     _modelJs.updateServing(newServing);
     (0, _recipeViewJsDefault.default).update(_modelJs.state.recipe);
@@ -3137,9 +3140,11 @@ class ResultView extends (0, _viewJsDefault.default) {
         return this._data.map((recipe)=>this._generateMarkupItem(recipe)).join("");
     }
     _generateMarkupItem(recipe) {
+        // get hash to check if it is active or not
+        const id = window.location.hash.slice(1);
         return `
         <li class="preview">
-            <a class="preview__link" href=#${recipe.id}>
+            <a class="preview__link ${id === recipe.id ? "preview__link--active" : ""}"  href=#${recipe.id}>
             <figure class="preview__fig">
                 <img src=${recipe.image} alt=${recipe.title} />
             </figure>

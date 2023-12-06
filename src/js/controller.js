@@ -5,6 +5,7 @@ import RecipeView from './views/recipeView.js'; // import recipeView object
 import SearchView from './views/searchView.js';
 import ResultView from './views/resultView.js';
 import PaginationView from './views/paginationView.js';
+import resultView from './views/resultView.js';
 
 // handler recipe that user clicks on
 const controlRecipes = async function () {
@@ -12,6 +13,9 @@ const controlRecipes = async function () {
     // receive id(#hash) from url
     const id = window.location.hash.slice(1);
     if (!id) return;
+
+    // mark active recipe
+    resultView.update(model.getSearchResaultPage());
 
     RecipeView.renderSpinner();
     await model.loadRecipe(id);
@@ -42,6 +46,7 @@ const controlPagination = function (goTo) {
   PaginationView.render(model.state.search);
 };
 
+// handler for change servings number
 const controlServing = function (newServing) {
   model.updateServing(newServing);
   RecipeView.update(model.state.recipe);
