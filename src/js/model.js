@@ -40,7 +40,6 @@ export const loadSearchResult = async function (query) {
   try {
     // store query in the state
     state.search.query = query;
-    state.search.page = 1;
     const data = await getJSON(`${API_URL}?search=${query}`);
 
     // store data in the state and destructure data
@@ -52,6 +51,9 @@ export const loadSearchResult = async function (query) {
         image: recipe.image_url,
       };
     });
+
+    // reset page to one
+    state.search.page = 1;
   } catch (err) {
     console.log(err);
   }
