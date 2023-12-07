@@ -6,7 +6,6 @@ class PreviewView extends View {
   _generateMarkup() {
     // get hash to check if it is active or not
     const id = window.location.hash.slice(1);
-    console.log(this._data);
     return `
         <li class="preview">
             <a class="preview__link ${

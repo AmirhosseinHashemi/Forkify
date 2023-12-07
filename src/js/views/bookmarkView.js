@@ -9,6 +9,10 @@ class BookMarkView extends View {
   _generateMarkup() {
     return this._data.map(recipe => PreviewView.render(recipe, false)).join('');
   }
+
+  addHandlerBookmark(handler) {
+    window.addEventListener('load', handler);
+  }
 }
 
 export default new BookMarkView();

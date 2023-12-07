@@ -635,8 +635,14 @@ const controlBookMark = function() {
     (0, _recipeViewJsDefault.default).update(_modelJs.state.recipe);
     (0, _bookmarkViewJsDefault.default).render(_modelJs.state.bookMarks);
 };
+// handler for recive bookmarks from local storage
+const reciveBookmarks = function() {
+    _modelJs.getBookmarks();
+    (0, _bookmarkViewJsDefault.default).render(_modelJs.state.bookMarks);
+};
 // add handler to events _ publisher-subscriber pattern
 const init = function() {
+    (0, _bookmarkViewJsDefault.default).addHandlerBookmark(reciveBookmarks);
     (0, _recipeViewJsDefault.default).addHandlerRender(controlRecipes);
     (0, _recipeViewJsDefault.default).addHandlerServingUpdate(controlServing);
     (0, _recipeViewJsDefault.default).addHandlerBookMark(controlBookMark);
@@ -2482,6 +2488,7 @@ parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
 parcelHelpers.export(exports, "loadSearchResult", ()=>loadSearchResult);
 parcelHelpers.export(exports, "getSearchResaultPage", ()=>getSearchResaultPage);
 parcelHelpers.export(exports, "updateServing", ()=>updateServing);
+parcelHelpers.export(exports, "getBookmarks", ()=>getBookmarks);
 parcelHelpers.export(exports, "addBookMark", ()=>addBookMark);
 parcelHelpers.export(exports, "removeBookMark", ()=>removeBookMark);
 var _configJs = require("./config.js");
@@ -2550,14 +2557,24 @@ const updateServing = function(newServing) {
     });
     state.recipe.servings = newServing;
 };
+// set bookmarks in the local storage
+const setBookmarksInStorage = function() {
+    localStorage.setItem("bookmarks", JSON.stringify(state.bookMarks));
+};
+const getBookmarks = function() {
+    const storage = localStorage.getItem("bookmarks");
+    state.bookMarks = JSON.parse(storage);
+};
 const addBookMark = function(recipe) {
     state.bookMarks.push(recipe);
     if (state.recipe.id === recipe.id) state.recipe.bookMark = true;
+    setBookmarksInStorage();
 };
 const removeBookMark = function(id) {
     const index = state.bookMarks.findIndex((marked)=>id === marked.id);
     state.bookMarks.splice(index, 1);
     if (state.recipe.id === id) state.recipe.bookMark = false;
+    setBookmarksInStorage();
 };
 
 },{"./config.js":"k5Hzs","./helpers.js":"hGI1E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
@@ -3189,7 +3206,6 @@ class PreviewView extends (0, _viewJsDefault.default) {
     _generateMarkup() {
         // get hash to check if it is active or not
         const id = window.location.hash.slice(1);
-        console.log(this._data);
         return `
         <li class="preview">
             <a class="preview__link ${id === this._data.id ? "preview__link--active" : ""}"  href=#${this._data.id}>
@@ -3264,6 +3280,9 @@ class BookMarkView extends (0, _viewJsDefault.default) {
     // generate one markup as one recipe
     _generateMarkup() {
         return this._data.map((recipe)=>(0, _previewViewJsDefault.default).render(recipe, false)).join("");
+    }
+    addHandlerBookmark(handler) {
+        window.addEventListener("load", handler);
     }
 }
 exports.default = new BookMarkView();

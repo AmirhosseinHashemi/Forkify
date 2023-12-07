@@ -65,8 +65,15 @@ const controlBookMark = function () {
   BookmarkView.render(model.state.bookMarks);
 };
 
+// handler for recive bookmarks from local storage
+const reciveBookmarks = function () {
+  model.getBookmarks();
+  BookmarkView.render(model.state.bookMarks);
+};
+
 // add handler to events _ publisher-subscriber pattern
 const init = function () {
+  BookmarkView.addHandlerBookmark(reciveBookmarks);
   RecipeView.addHandlerRender(controlRecipes);
   RecipeView.addHandlerServingUpdate(controlServing);
   RecipeView.addHandlerBookMark(controlBookMark);
