@@ -1,33 +1,13 @@
-import icons from 'url:../../img/icons.svg'; // point to icons file in dist folder
 import View from './view.js';
+import PreviewView from './previewView.js';
 
 class ResultView extends View {
   _parentElement = document.querySelector('.results');
+  _errorMessage = 'Recipes not found :(\nPlease try another one.';
 
   // generate one markup as one recipe
   _generateMarkup() {
-    return this._data.map(recipe => this._generateMarkupItem(recipe)).join('');
-  }
-
-  _generateMarkupItem(recipe) {
-    // get hash to check if it is active or not
-    const id = window.location.hash.slice(1);
-
-    return `
-        <li class="preview">
-            <a class="preview__link ${
-              id === recipe.id ? 'preview__link--active' : ''
-            }"  href=#${recipe.id}>
-            <figure class="preview__fig">
-                <img src=${recipe.image} alt=${recipe.title} />
-            </figure>
-            <div class="preview__data">
-                <h4 class="preview__title">${recipe.title}</h4>
-                <p class="preview__publisher">${recipe.publisher}</p>
-            </div>
-            </a>
-        </li>
-    `;
+    return this._data.map(recipe => PreviewView.render(recipe, false)).join('');
   }
 }
 

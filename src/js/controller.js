@@ -5,6 +5,7 @@ import RecipeView from './views/recipeView.js'; // import recipeView object
 import SearchView from './views/searchView.js';
 import ResultView from './views/resultView.js';
 import PaginationView from './views/paginationView.js';
+import BookmarkView from './views/bookmarkView.js';
 
 // handler recipe that user clicks on
 const controlRecipes = async function () {
@@ -15,6 +16,7 @@ const controlRecipes = async function () {
 
     // mark active recipe
     ResultView.update(model.getSearchResaultPage());
+    BookmarkView.update(model.state.bookMarks);
 
     RecipeView.renderSpinner();
     await model.loadRecipe(id);
@@ -58,7 +60,9 @@ const controlBookMark = function () {
   } else {
     model.addBookMark(model.state.recipe);
   }
+
   RecipeView.update(model.state.recipe);
+  BookmarkView.render(model.state.bookMarks);
 };
 
 // add handler to events _ publisher-subscriber pattern
