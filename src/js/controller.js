@@ -6,6 +6,7 @@ import SearchView from './views/searchView.js';
 import ResultView from './views/resultView.js';
 import PaginationView from './views/paginationView.js';
 import BookmarkView from './views/bookmarkView.js';
+import AddRecipeView from './views/addRecipeView.js';
 
 // handler recipe that user clicks on
 const controlRecipes = async function () {
@@ -71,6 +72,11 @@ const reciveBookmarks = function () {
   BookmarkView.render(model.state.bookMarks);
 };
 
+// handler for upload recipe
+const controlAddRecipe = function (newRecipe) {
+  console.log(newRecipe);
+};
+
 // add handler to events _ publisher-subscriber pattern
 const init = function () {
   BookmarkView.addHandlerBookmark(reciveBookmarks);
@@ -79,5 +85,6 @@ const init = function () {
   RecipeView.addHandlerBookMark(controlBookMark);
   SearchView.addHandlerSearch(controlSearchResault);
   PaginationView.addHandlerPagination(controlPagination);
+  AddRecipeView.addHandlerAddRecipe(controlAddRecipe);
 };
 init();
