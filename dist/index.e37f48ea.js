@@ -2540,7 +2540,7 @@ const recreateRecipeObject = function(data) {
 };
 const loadRecipe = async function(id) {
     try {
-        const data = await (0, _helpersJs.getJSON)(`${(0, _configJs.API_URL)}${id}?key=${(0, _configJs.KEY)}`);
+        const data = await (0, _helpersJs.AJAX)(`${(0, _configJs.API_URL)}${id}?key=${(0, _configJs.KEY)}`);
         state.recipe = recreateRecipeObject(data);
         // is recipe on book mark list or not
         state.recipe.bookMark = state.bookMarks.some((marked)=>marked.id === id);
@@ -2553,7 +2553,7 @@ const loadSearchResult = async function(query) {
     try {
         // store query in the state
         state.search.query = query;
-        const data = await (0, _helpersJs.getJSON)(`${(0, _configJs.API_URL)}?search=${query}&key=${(0, _configJs.KEY)}`);
+        const data = await (0, _helpersJs.AJAX)(`${(0, _configJs.API_URL)}?search=${query}&key=${(0, _configJs.KEY)}`);
         // store data in the state and destructure data
         state.search.result = data.data.recipes.map((recipe)=>{
             return {
@@ -2627,7 +2627,7 @@ const uploadRecipe = async function(newRecipe) {
             cooking_time: newRecipe.cookingTime,
             ingredients
         };
-        const data = await (0, _helpersJs.sendJSON)(`${(0, _configJs.API_URL)}?key=${(0, _configJs.KEY)}`, recipe);
+        const data = await (0, _helpersJs.AJAX)(`${(0, _configJs.API_URL)}?key=${(0, _configJs.KEY)}`, recipe);
         state.recipe = recreateRecipeObject(data);
         addBookMark(state.recipe);
         console.log(state);
@@ -2681,8 +2681,7 @@ exports.export = function(dest, destName, get) {
 },{}],"hGI1E":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getJSON", ()=>getJSON);
-parcelHelpers.export(exports, "sendJSON", ()=>sendJSON);
+parcelHelpers.export(exports, "AJAX", ()=>AJAX);
 var _configJs = require("./config.js");
 // promisifying setTimeout
 const timeout = function(s) {
@@ -2692,33 +2691,15 @@ const timeout = function(s) {
         }, s * 1000);
     });
 };
-const getJSON = async function(url) {
+const AJAX = async function(url, uploadedData) {
     try {
-        // send and receive request with limit time
-        const fetchPromise = fetch(url);
-        const response = await Promise.race([
-            fetchPromise,
-            timeout((0, _configJs.TIMEOUT_SEC))
-        ]);
-        const data = await response.json();
-        // handle errors that returns fulfiled promise
-        if (!response.ok) throw new Error(`${data.message} (${response.status})`);
-        return data;
-    } catch (err) {
-        // rethrow error for another async function to handle it there
-        throw err;
-    }
-};
-const sendJSON = async function(url, uploadedData) {
-    try {
-        // send data for server
-        const fetchPromise = fetch(url, {
+        const fetchPromise = uploadedData ? fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(uploadedData)
-        });
+        }) : fetch(url);
         const response = await Promise.race([
             fetchPromise,
             timeout((0, _configJs.TIMEOUT_SEC))

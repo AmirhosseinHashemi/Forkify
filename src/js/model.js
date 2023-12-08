@@ -1,5 +1,5 @@
 import { API_URL, KEY, RES_PER_PAGE } from './config.js';
-import { getJSON, sendJSON } from './helpers.js';
+import { AJAX } from './helpers.js';
 
 export const state = {
   recipe: {},
@@ -32,7 +32,7 @@ const recreateRecipeObject = function (data) {
 // receive recipe that users clicks on them
 export const loadRecipe = async function (id) {
   try {
-    const data = await getJSON(`${API_URL}${id}?key=${KEY}`);
+    const data = await AJAX(`${API_URL}${id}?key=${KEY}`);
     state.recipe = recreateRecipeObject(data);
     // is recipe on book mark list or not
     state.recipe.bookMark = state.bookMarks.some(marked => marked.id === id);
@@ -47,7 +47,7 @@ export const loadSearchResult = async function (query) {
   try {
     // store query in the state
     state.search.query = query;
-    const data = await getJSON(`${API_URL}?search=${query}&key=${KEY}`);
+    const data = await AJAX(`${API_URL}?search=${query}&key=${KEY}`);
 
     // store data in the state and destructure data
     state.search.result = data.data.recipes.map(recipe => {
@@ -135,7 +135,7 @@ export const uploadRecipe = async function (newRecipe) {
       cooking_time: newRecipe.cookingTime,
       ingredients,
     };
-    const data = await sendJSON(`${API_URL}?key=${KEY}`, recipe);
+    const data = await AJAX(`${API_URL}?key=${KEY}`, recipe);
     state.recipe = recreateRecipeObject(data);
     addBookMark(state.recipe);
     console.log(state);
