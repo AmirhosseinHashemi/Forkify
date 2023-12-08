@@ -74,7 +74,7 @@ const reciveBookmarks = function () {
 
 // handler for upload recipe
 const controlAddRecipe = function (newRecipe) {
-  console.log(newRecipe);
+  model.uploadRecipe(newRecipe);
 };
 
 // add handler to events _ publisher-subscriber pattern

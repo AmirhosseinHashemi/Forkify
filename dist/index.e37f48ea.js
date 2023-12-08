@@ -644,7 +644,7 @@ const reciveBookmarks = function() {
 };
 // handler for upload recipe
 const controlAddRecipe = function(newRecipe) {
-    console.log(newRecipe);
+    _modelJs.uploadRecipe(newRecipe);
 };
 // add handler to events _ publisher-subscriber pattern
 const init = function() {
@@ -2498,6 +2498,7 @@ parcelHelpers.export(exports, "updateServing", ()=>updateServing);
 parcelHelpers.export(exports, "getBookmarks", ()=>getBookmarks);
 parcelHelpers.export(exports, "addBookMark", ()=>addBookMark);
 parcelHelpers.export(exports, "removeBookMark", ()=>removeBookMark);
+parcelHelpers.export(exports, "uploadRecipe", ()=>uploadRecipe);
 var _configJs = require("./config.js");
 var _helpersJs = require("./helpers.js");
 const state = {
@@ -2582,6 +2583,35 @@ const removeBookMark = function(id) {
     state.bookMarks.splice(index, 1);
     if (state.recipe.id === id) state.recipe.bookMark = false;
     setBookmarksInStorage();
+};
+const uploadRecipe = async function(newRecipe) {
+    try {
+        // destructur ingredients into an array of object
+        const ingredients = Object.entries(newRecipe).filter((entry)=>entry[0].startsWith("ingredient") && entry[1] !== "").map((ing)=>{
+            const ingredientArr = ing[1].replaceAll(" ", "").split(",");
+            // check if ingredients is written into correct form  => quantity,unit,description
+            if (ingredientArr.length !== 3) throw new Error("Please enter ingredients in correct form :(");
+            const [quantity, unit, description] = ingredientArr;
+            return {
+                quantity: quantity ? +quantity : null,
+                unit,
+                description
+            };
+        });
+        // convert uploaded recipe into correct form to send for server
+        const recipe = {
+            title: newRecipe.title,
+            publisher: newRecipe.publisher,
+            source_url: newRecipe.sourceUrl,
+            image_url: newRecipe.image,
+            servings: newRecipe.servings,
+            cooking_time: newRecipe.cookingTime,
+            ingredients,
+            bookMark: true
+        };
+    } catch (err) {
+        console.error(err);
+    }
 };
 
 },{"./config.js":"k5Hzs","./helpers.js":"hGI1E","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {

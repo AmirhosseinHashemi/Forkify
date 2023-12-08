@@ -101,3 +101,38 @@ export const removeBookMark = function (id) {
   if (state.recipe.id === id) state.recipe.bookMark = false;
   setBookmarksInStorage();
 };
+
+export const uploadRecipe = async function (newRecipe) {
+  try {
+    // destructur ingredients into an array of object
+    const ingredients = Object.entries(newRecipe)
+      .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
+      .map(ing => {
+        const ingredientArr = ing[1].replaceAll(' ', '').split(',');
+        // check if ingredients is written into correct form  => quantity,unit,description
+        if (ingredientArr.length !== 3) {
+          throw new Error('Please enter ingredients in correct form :(');
+        }
+        const [quantity, unit, description] = ingredientArr;
+        return {
+          quantity: quantity ? +quantity : null,
+          unit,
+          description,
+        };
+      });
+
+    // convert uploaded recipe into correct form to send for server
+    const recipe = {
+      title: newRecipe.title,
+      publisher: newRecipe.publisher,
+      source_url: newRecipe.sourceUrl,
+      image_url: newRecipe.image,
+      servings: newRecipe.servings,
+      cooking_time: newRecipe.cookingTime,
+      ingredients,
+      bookMark: true,
+    };
+  } catch (err) {
+    console.error(err);
+  }
+};
