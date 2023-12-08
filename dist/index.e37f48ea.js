@@ -2623,8 +2623,8 @@ const uploadRecipe = async function(newRecipe) {
             publisher: newRecipe.publisher,
             source_url: newRecipe.sourceUrl,
             image_url: newRecipe.image,
-            servings: newRecipe.servings,
-            cooking_time: newRecipe.cookingTime,
+            servings: +newRecipe.servings,
+            cooking_time: +newRecipe.cookingTime,
             ingredients
         };
         const data = await (0, _helpersJs.AJAX)(`${(0, _configJs.API_URL)}?key=${(0, _configJs.KEY)}`, recipe);
@@ -3148,7 +3148,14 @@ var _iconsSvg = require("url:../../img/icons.svg"); // point to icons file in di
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 class View {
     _data;
-    render(data, render = true) {
+    /**
+   * Render the received object to the DOM
+   * @param {object | object[]} data  It recevis recipe objects or array of recipes
+   * @param {boolean} render If it is false, then it returns just a markup instead of insert html in the DOM
+   * @this {object} View instance
+   * @returns {string | undefined} If render is true it returns undefined otherwise a markup string
+   * @author Amirhossein Hashemi
+   */ render(data, render = true) {
         if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
         this._data = data;
         const markup = this._generateMarkup();

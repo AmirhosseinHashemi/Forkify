@@ -3,6 +3,14 @@ import icons from 'url:../../img/icons.svg'; // point to icons file in dist fold
 export default class View {
   _data;
 
+  /**
+   * Render the received object to the DOM
+   * @param {object | object[]} data  It recevis recipe objects or array of recipes
+   * @param {boolean} render If it is false, then it returns just a markup instead of insert html in the DOM
+   * @this {object} View instance
+   * @returns {string | undefined} If render is true it returns undefined otherwise a markup string
+   * @author Amirhossein Hashemi
+   */
   render(data, render = true) {
     if (!data || (Array.isArray(data) && data.length === 0)) {
       return this.renderError();

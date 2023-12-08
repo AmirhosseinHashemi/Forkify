@@ -131,8 +131,8 @@ export const uploadRecipe = async function (newRecipe) {
       publisher: newRecipe.publisher,
       source_url: newRecipe.sourceUrl,
       image_url: newRecipe.image,
-      servings: newRecipe.servings,
-      cooking_time: newRecipe.cookingTime,
+      servings: +newRecipe.servings,
+      cooking_time: +newRecipe.cookingTime,
       ingredients,
     };
     const data = await AJAX(`${API_URL}?key=${KEY}`, recipe);
