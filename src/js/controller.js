@@ -73,8 +73,18 @@ const reciveBookmarks = function () {
 };
 
 // handler for upload recipe
-const controlAddRecipe = function (newRecipe) {
-  model.uploadRecipe(newRecipe);
+const controlAddRecipe = async function (newRecipe) {
+  try {
+    AddRecipeView.renderSpinner();
+    await model.uploadRecipe(newRecipe);
+    RecipeView.render(model.state.recipe);
+    BookmarkView.render(model.state.bookMarks);
+    //change url hash
+    window.history.pushState(null, '', `#${model.state.recipe.id}`);
+    AddRecipeView.renderSuccess();
+  } catch (err) {
+    AddRecipeView.renderError(err.message);
+  }
 };
 
 // add handler to events _ publisher-subscriber pattern

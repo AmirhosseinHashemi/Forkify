@@ -1,5 +1,5 @@
-import { API_URL, RES_PER_PAGE } from './config.js';
-import { getJSON } from './helpers.js';
+import { API_URL, KEY, RES_PER_PAGE } from './config.js';
+import { getJSON, sendJSON } from './helpers.js';
 
 export const state = {
   recipe: {},
@@ -12,27 +12,30 @@ export const state = {
   bookMarks: [],
 };
 
+const recreateRecipeObject = function (data) {
+  const { recipe } = data.data;
+
+  // store data in the state
+  return {
+    id: recipe.id,
+    title: recipe.title,
+    publisher: recipe.publisher,
+    sourceUrl: recipe.source_url,
+    image: recipe.image_url,
+    servings: recipe.servings,
+    cookingTime: recipe.cooking_time,
+    ingredients: recipe.ingredients,
+    ...(recipe.key && { key: recipe.key }),
+  };
+};
+
 // receive recipe that users clicks on them
 export const loadRecipe = async function (id) {
   try {
-    const data = await getJSON(`${API_URL}${id}`);
-
-    const { recipe } = data.data;
-
-    // store data in the state
-    state.recipe = {
-      id: recipe.id,
-      title: recipe.title,
-      publisher: recipe.publisher,
-      sourceUrl: recipe.source_url,
-      image: recipe.image_url,
-      servings: recipe.servings,
-      cookingTime: recipe.cooking_time,
-      ingredients: recipe.ingredients,
-
-      // is recipe on book mark list or not
-      bookMark: state.bookMarks.some(marked => marked.id === id),
-    };
+    const data = await getJSON(`${API_URL}${id}?key=${KEY}`);
+    state.recipe = recreateRecipeObject(data);
+    // is recipe on book mark list or not
+    state.recipe.bookMark = state.bookMarks.some(marked => marked.id === id);
   } catch (err) {
     // rethrow error for controller
     throw err;
@@ -44,7 +47,7 @@ export const loadSearchResult = async function (query) {
   try {
     // store query in the state
     state.search.query = query;
-    const data = await getJSON(`${API_URL}?search=${query}`);
+    const data = await getJSON(`${API_URL}?search=${query}&key=${KEY}`);
 
     // store data in the state and destructure data
     state.search.result = data.data.recipes.map(recipe => {
@@ -53,6 +56,7 @@ export const loadSearchResult = async function (query) {
         title: recipe.title,
         publisher: recipe.publisher,
         image: recipe.image_url,
+        ...(recipe.key && { key: recipe.key }),
       };
     });
 
@@ -86,7 +90,7 @@ const setBookmarksInStorage = function () {
 // get bookmarks from the local storage
 export const getBookmarks = function () {
   const storage = localStorage.getItem('bookmarks');
-  state.bookMarks = JSON.parse(storage);
+  if (storage) state.bookMarks = JSON.parse(storage);
 };
 
 export const addBookMark = function (recipe) {
@@ -130,9 +134,12 @@ export const uploadRecipe = async function (newRecipe) {
       servings: newRecipe.servings,
       cooking_time: newRecipe.cookingTime,
       ingredients,
-      bookMark: true,
     };
+    const data = await sendJSON(`${API_URL}?key=${KEY}`, recipe);
+    state.recipe = recreateRecipeObject(data);
+    addBookMark(state.recipe);
+    console.log(state);
   } catch (err) {
-    console.error(err);
+    throw err;
   }
 };

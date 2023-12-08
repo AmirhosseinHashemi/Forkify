@@ -2,6 +2,7 @@ import View from './view.js';
 
 class AddRecipeView extends View {
   _parentElement = document.querySelector('.upload');
+  _successMessage = 'Your recipe successfully added :)';
 
   _btnOpenModal = document.querySelector('.nav__btn--add-recipe');
   _btnCloseModal = document.querySelector('.btn--close-modal');
@@ -29,7 +30,7 @@ class AddRecipeView extends View {
   }
 
   addHandlerAddRecipe(handler) {
-    this._parentElement.addEventListener('click', function (e) {
+    this._parentElement.addEventListener('submit', function (e) {
       e.preventDefault();
 
       // destructure data from api into array
